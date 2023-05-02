@@ -108,9 +108,11 @@ class PostController {
         .putPost(title, content, postId, userId)
         .catch((err) => {
           console.log(err);
-          res.status(401).json(putPost);
+          res.status(401).json({
+            errorMessage: "게시글 수정이 정상적으로 처리되지 않았습니다.",
+          });
         });
-      res.status(200).json({ message: "게시글을 수정하였습니다." });
+      res.status(200).json(putPost);
     } catch (err) {
       console.log(err);
       res.status(400).json({
