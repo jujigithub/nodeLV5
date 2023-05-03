@@ -28,17 +28,18 @@ class PostService {
 
   findOnePost = async (postId) => {
     const post = await this.postRepository.findOnePost(postId);
-
-    return {
-      postId: post.postId,
-      userId: post.UserId,
-      nickname: post.nickname,
-      title: post.title,
-      content: post.content,
-      likes: post.likes,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
-    };
+    if (post) {
+      return {
+        postId: post.postId,
+        userId: post.UserId,
+        nickname: post.nickname,
+        title: post.title,
+        content: post.content,
+        likes: post.likes,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      };
+    }
   };
 
   putPost = async (title, content, postId, userId) => {

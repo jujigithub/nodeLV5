@@ -59,12 +59,16 @@ class PostController {
 
   getPost = async (req, res) => {
     const { postId } = req.params;
+
     const post = await this.postService.findOnePost(postId);
 
     try {
+      if (!post) {
+        res.status(413).json({ message: "해당 게시글이 존재하지 않습니다." });
+        return;
+      }
       res.status(200).json({ post });
     } catch (err) {
-      console.log(err);
       res.status(400).json({
         errorMessage: "게시글 조회에 실패하였습니다.",
       });

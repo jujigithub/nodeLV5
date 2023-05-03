@@ -65,7 +65,6 @@ class UserController {
     const { nickname, password } = req.body;
     const user = await this.userService.findOneUser(nickname);
     try {
-      // 인증 메세지는 자세히 설명 X
       if (!user || password !== user.password) {
         res.status(412).json({
           errorMessage: "닉네임 또는 패스워드를 확인해주세요.",
@@ -73,10 +72,10 @@ class UserController {
         return;
       }
 
-      const token = jwt.sign({ userId: user.userId }, "jjm-custom-secret-key");
+      const userData = await this.userService.login(nickname, password);
 
-      res.cookie("Authorization", `Bearer ${token}`); // JWT를 Cookie로 할당
-      res.status(200).json({ token }); // JWT를 Body로 할당
+      res.cookie("Authorization", `Bearer ${userData.token}`);
+      res.status(200).json(userData);
     } catch (err) {
       console.log(err);
       res.status(400).json({

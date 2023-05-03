@@ -50,7 +50,7 @@ class CommentController {
         res.status(404).json({ message: "게시글이 존재하지 않습니다" });
         return;
       }
-      res.status(200).json(comments);
+      res.status(200).json({ comments: comments });
     } catch (err) {
       console.log(err);
       res.status(400).json({
