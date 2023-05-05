@@ -54,7 +54,6 @@ class UserController {
 
       res.status(201).json(signupData);
     } catch (err) {
-      console.log(err);
       res.status(400).json({
         errorMessage: "요청한 데이터 형식이 올바르지 않습니다.",
       });
@@ -74,10 +73,18 @@ class UserController {
 
       const userData = await this.userService.login(nickname, password);
 
-      res.cookie("Authorization", `Bearer ${userData.token}`);
-      res.status(200).json(userData);
+      res.cookie(
+        "Authorization",
+        `${userData.accessObject.type} ${userData.accessObject.token}`
+      );
+      //
+
+      // res.locals.user = user.dataValues;
+      res.cookie("refreshToken", userData.refreshToken);
+      res.status(200).json({
+        Authorization: `${userData.accessObject.type} ${userData.accessObject.token}`,
+      });
     } catch (err) {
-      console.log(err);
       res.status(400).json({
         errorMessage: "로그인에 실패하였습니다.",
       });
