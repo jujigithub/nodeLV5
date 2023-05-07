@@ -1,14 +1,12 @@
 const jwt = require("jsonwebtoken");
 const { Users } = require("../models");
 const { Tokens } = require("../models");
-const UserRepository = require("../repositories/user.repository");
 const TokenRepository = require("../repositories/token.repository");
 
 const SECRET_KEY = "jjm-custom-secret-key";
 
 // 사용자 인증 미들웨어
 module.exports = async (req, res, next) => {
-  const userRepository = new UserRepository(Users);
   const tokenRepository = new TokenRepository(Tokens);
   const { Authorization, refreshToken } = req.cookies;
   const [authType, accessToken] = (Authorization ?? "").split(" ");
@@ -28,9 +26,6 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const accessToken = req.cookies.Authorization;
-    const refreshToken = req.cookies.refreshToken;
-
     if (!refreshToken)
       return res
         .status(400)
@@ -40,11 +35,10 @@ module.exports = async (req, res, next) => {
         .status(400)
         .json({ message: "Access Token이 존재하지 않습니다." });
 
-    const a = accessToken.split(" ")[1];
-    const isAccessTokenValidate = validateAccessToken(a);
+    const isAccessTokenValidate = validateAccessToken(accessToken);
     const isRefreshTokenValidate = validateRefreshToken(refreshToken);
 
-    const decodedToken = jwt.verify(a, SECRET_KEY);
+    const decodedToken = jwt.verify(accessToken, SECRET_KEY);
     const userId = decodedToken.userId;
 
     if (!isRefreshTokenValidate)
